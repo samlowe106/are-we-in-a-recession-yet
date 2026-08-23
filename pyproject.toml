@@ -1,17 +1,14 @@
 [project]
 name = "are-we-in-a-recession-yet"
 version = "0.1.0"
-description = "Two well-known recession definitions -- the two-consecutive-quarter real income decline rule of thumb, and Claudia Sahm's real-time unemployment rule -- implemented as pure functions over plain time series data."
+description = "Four well-known recession definitions: two-consecutive-quarter decline, Claudia Sahm's real-time unemployment rule, yield curve inversion, and NBER's coincident indicators, all implemented as pure functions over plain time series data."
 readme = "README.md"
 requires-python = ">=3.14"
 license = "AGPL-3.0-or-later"
 dependencies = []
 
 [dependency-groups]
-dev = [
-    "pre-commit>=4.6.0",
-    "pytest>=9.0.3",
-]
+dev = ["pre-commit>=4.6.0", "pytest>=9.0.3"]
 
 [build-system]
 requires = ["hatchling"]
