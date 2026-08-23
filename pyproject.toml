@@ -1,0 +1,51 @@
+[project]
+name = "are-we-in-a-recession-yet"
+version = "0.1.0"
+description = "Two well-known recession definitions -- the two-consecutive-quarter real income decline rule of thumb, and Claudia Sahm's real-time unemployment rule -- implemented as pure functions over plain time series data."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "AGPL-3.0-or-later"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+    "pytest>=9.0.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/are_we_in_a_recession_yet"]
+
+# No install step needed to run the tests (see test/test_definitions.py's
+# plain `from are_we_in_a_recession_yet import ...`): this puts src/ on
+# sys.path for the test run instead of requiring an editable install first.
+[tool.pytest.ini_options]
+testpaths = ["test"]
+pythonpath = ["src"]
+
+# Ruff (linter). Rule selection lives here, not in the pre-commit args, so your
+# editor's Ruff integration enforces exactly the same rules. The pre-commit hook
+# only adds --fix, so commits auto-apply fixable violations. Replaces the old
+# flake8 + isort combo -- "I" below is import ordering, same job isort did.
+[tool.ruff]
+target-version = "py314"
+
+[tool.ruff.lint]
+# Added on top of Ruff's defaults (E, F). Full list: https://docs.astral.sh/ruff/rules/
+extend-select = [
+    "I",    # isort: import ordering (replaces the standalone isort tool)
+    "UP",   # pyupgrade: modern syntax for the target Python version
+    "B",    # flake8-bugbear: likely bugs and footguns
+    "B014", # (explicit) redundant exception types in `except`
+    "F841", # (explicit) local variable assigned but never used
+    "SIM",  # flake8-simplify: simpler equivalent code
+    "RET",  # flake8-return: return-statement hygiene
+    "LOG",  # flake8-logging: correct logging usage
+    "G",    # flake8-logging-format: no f-strings / % in log calls
+    "PERF", # perflint: performance anti-patterns
+    "T20",  # flake8-print: flags stray print() (use `# noqa: T201` to allow one)
+]
