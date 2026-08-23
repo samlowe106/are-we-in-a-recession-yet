@@ -1,0 +1,44 @@
+# Example only, not something this repo actually runs: this package is
+# deliberately I/O-free (see models.py's own docstring -- "nothing here
+# knows about FRED, HTTP, or file formats, that's the caller's job"), so
+# there's no fetch_data.py here for the `schedule:` trigger below to run.
+# It's commented out for that reason -- uncommenting it as-is would just
+# fail on a schedule forever. Copy this into a project that actually
+# consumes this package (see README.md's Usage section), point
+# fetch_data.py at a real script that imports these functions and writes
+# the result somewhere, and uncomment the schedule.
+name: Example - refresh recession data on a schedule
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "23 13 * * 1"  # weekly, off the top of the hour
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: true # needed to push the commit below
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Fetch data and compute verdicts
+        run: uv run fetch_data.py # your own script -- see README.md's Usage section
+
+      - name: Commit refreshed data if it changed
+        run: |
+          if git diff --quiet -- path/to/resolved.yml; then
+            echo "No change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add path/to/resolved.yml
+          git commit -m "Refresh recession data"
+          git push
